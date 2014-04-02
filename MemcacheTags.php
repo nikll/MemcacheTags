@@ -116,10 +116,11 @@ class MemcacheTags extends Memcache {
 	 * @return bool
 	 */
 	public function deleteTag($tag) {
-		if (is_array($tag))
-			foreach ($tag as $k) $this->deleteTag($k);
-		else 	parent::set($this->prefix.'_tag_'.$tag, microtime(true));
-		return true;
+		if (!is_array($tag)) return parent::set($this->prefix.'_tag_'.$tag, microtime(true));
+
+		$result = true;
+		foreach ($tag as $k) $result &= $this->deleteTag($k);
+		return $result;
 	}
 
 	/**
